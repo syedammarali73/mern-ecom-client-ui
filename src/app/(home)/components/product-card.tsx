@@ -1,6 +1,8 @@
+'use client';
 import Image from 'next/image';
-import { Card, CardContent, CardFooter, CardHeader } from '../card'
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader } from '../../../components/ui/card'
+import ProductModal from './product-modal';
+import { useState } from 'react';
 
 export type Product = {
     id: string;
@@ -28,9 +30,7 @@ function ProductCard({ product }: PropTypes) {
                     <span className='font-bold'>₹{product.price}</span>
                 </p>
 
-                <Button className="bg-orange-200 hover:bg-orange-300 text-orange-500 px-6 py-2 rounded-full shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150">
-                    Choose
-                </Button>
+                <ProductModal />
             </CardFooter>
         </Card>
     )

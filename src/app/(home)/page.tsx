@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import ProductCard, { Product } from "@/components/ui/custom/productCard";
+import ProductCard, { Product } from "@/app/(home)/components/product-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 
@@ -73,14 +73,14 @@ export default function Home() {
                             <TabsTrigger value="beverages" className="text-md">Beverages</TabsTrigger>
                         </TabsList>
                         <TabsContent value="pizza">
-                            <div className="grid grid-cols-4 gap-6 mt-6">
+                            <div className="mx-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
                                 {products.map((product) => (
                                     <ProductCard product={product} key={product.id} />
                                 ))}
                             </div>
                         </TabsContent>
                         <TabsContent value="beverages">
-                            <div className="grid grid-cols-4 gap-6 mt-6">
+                            <div className="mx-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
                                 {products.map((product) => (
                                     <ProductCard product={product} key={product.id} />
                                 ))}
