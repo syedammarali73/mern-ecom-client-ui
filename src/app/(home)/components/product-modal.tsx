@@ -44,7 +44,7 @@ const ProductModal = () => {
 
     const [selectedSize, setSelectedSize] = useState('Small');
     const [selectedCrust, setSelectedCrust] = useState('Thin');
-    const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
+    const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
     const sizePrice =
         configurations[0].options.find((item) => item.name === selectedSize)?.price ?? 0;
@@ -52,14 +52,19 @@ const ProductModal = () => {
     const crustPrice =
         configurations[1].options.find((item) => item.name === selectedCrust)?.price ?? 0;
 
-    const toppingsPrice = selectedTopping?.price ?? 0;
+    const toppingsPrice = selectedToppings.reduce(
+        (total, topping) => total + topping.price,
+        0
+    );
 
 
     const totalPrice = sizePrice + crustPrice + toppingsPrice;
 
     const toggleTopping = (topping: Topping) => {
-        setSelectedTopping((current) =>
-            current?.id === topping.id ? null : topping
+        setSelectedToppings((current) =>
+            current.some((item) => item.id === topping.id)
+                ? current.filter((item) => item.id !== topping.id)
+                : [...current, topping]
         );
     };
 
@@ -157,7 +162,7 @@ const ProductModal = () => {
 
                         <ToppingList
                             toppings={toppings}
-                            selectedTopping={selectedTopping}
+                            selectedToppings={selectedToppings}
                             onToppingToggle={toggleTopping}
                         />
 

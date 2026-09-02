@@ -8,12 +8,12 @@ import Image from 'next/image';
 
 type PropType = {
     topping: Topping;
-    selectedTopping: Topping | null;
+    selectedToppings: Topping[];
     onToppingToggle: (topping: Topping) => void;
 }
 
-function ToppingCard({ topping, selectedTopping, onToppingToggle }: PropType) {
-    const isCurrentSelected = selectedTopping?.id === topping.id;
+function ToppingCard({ topping, selectedToppings, onToppingToggle }: PropType) {
+    const isCurrentSelected = selectedToppings.some((item) => item.id === topping.id);
 
     return (
         <Button
