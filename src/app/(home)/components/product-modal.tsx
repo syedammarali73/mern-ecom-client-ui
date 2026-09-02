@@ -2,11 +2,12 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import { CircleCheck, ShoppingCart } from 'lucide-react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import ToppingList from './topping-list';
+import { Topping } from '@/lib/types';
 
 const ProductModal = () => {
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -30,22 +31,20 @@ const ProductModal = () => {
             name: 'Crust',
             options: [
                 { name: 'Thin', price: 0 },
-                { name: 'Classic', price: 50 },
-                { name: 'Cheese Burst', price: 100 },
+                { name: 'Thick', price: 50 },
             ],
         },
     ];
 
-    const toppings = [
-        { name: 'Extra Cheese', price: 60 },
-        { name: 'Mushrooms', price: 40 },
-        { name: 'Olives', price: 40 },
-        { name: 'Jalapeños', price: 30 },
+    const toppings: Topping[] = [
+        { id: '1', name: 'Extra Cheese', image: '/cheese.png', price: 50, isAvailable: true },
+        { id: '2', name: 'Chicken', image: '/chicken.png', price: 50, isAvailable: true },
+        { id: '3', name: 'Jalapeños', image: '/jelapeno.png', price: 50, isAvailable: true },
     ];
 
-    const [selectedSize, setSelectedSize] = useState('Medium');
-    const [selectedCrust, setSelectedCrust] = useState('Classic');
-    const [selectedToppings, setSelectedToppings] = useState<string[]>([]);
+    const [selectedSize, setSelectedSize] = useState('Small');
+    const [selectedCrust, setSelectedCrust] = useState('Thin');
+    const [selectedTopping, setSelectedTopping] = useState<Topping | null>(null);
 
     const sizePrice =
         configurations[0].options.find((item) => item.name === selectedSize)?.price ?? 0;
@@ -53,19 +52,14 @@ const ProductModal = () => {
     const crustPrice =
         configurations[1].options.find((item) => item.name === selectedCrust)?.price ?? 0;
 
-    const toppingsPrice = selectedToppings.reduce((total, topping) => {
-        const item = toppings.find((item) => item.name === topping);
-        return total + (item?.price ?? 0);
-    }, 0);
+    const toppingsPrice = selectedTopping?.price ?? 0;
 
 
     const totalPrice = sizePrice + crustPrice + toppingsPrice;
 
-    const toggleTopping = (topping: string) => {
-        setSelectedToppings((current) =>
-            current.includes(topping)
-                ? current.filter((item) => item !== topping)
-                : [...current, topping]
+    const toggleTopping = (topping: Topping) => {
+        setSelectedTopping((current) =>
+            current?.id === topping.id ? null : topping
         );
     };
 
@@ -119,22 +113,16 @@ const ProductModal = () => {
                                 onValueChange={setSelectedSize}
                                 className="grid grid-cols-3 gap-3">
                                 {configurations[0].options.map((option) => (
-                                    <div key={option.name}>
-                                        <RadioGroupItem
-                                            value={option.name}
-                                            id={`size-${option.name}`}
-                                            className="peer sr-only"
-                                        />
-
-                                        <Label
-                                            htmlFor={`size-${option.name}`}
-                                            className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-background p-4 transition-all hover:border-orange-300 peer-data-[state=checked]:border-orange-500 peer-data-[state=checked]:bg-orange-50">
+                                    <RadioGroupItem
+                                        key={option.name}
+                                        value={option.name}
+                                        className="h-auto w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 transition-all hover:border-orange-300 data-checked:border-orange-500 data-checked:bg-orange-50 data-checked:text-foreground"
+                                    >
                                             <span className="font-medium">{option.name}</span>
                                             <span className="mt-1 text-xs text-muted-foreground">
                                                 ₹{option.price}
                                             </span>
-                                        </Label>
-                                    </div>
+                                    </RadioGroupItem>
                                 ))}
                             </RadioGroup>
                         </div>
@@ -153,71 +141,25 @@ const ProductModal = () => {
                                 onValueChange={setSelectedCrust}
                                 className="grid grid-cols-3 gap-3">
                                 {configurations[1].options.map((option) => (
-                                    <div key={option.name}>
-                                        <RadioGroupItem
-                                            value={option.name}
-                                            id={`crust-${option.name}`}
-                                            className="peer sr-only"
-                                        />
-
-                                        <Label
-                                            htmlFor={`crust-${option.name}`}
-                                            className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-background p-4 transition-all hover:border-orange-300 peer-data-[state=checked]:border-orange-500 peer-data-[state=checked]:bg-orange-50">
+                                    <RadioGroupItem
+                                        key={option.name}
+                                        value={option.name}
+                                        className="h-auto w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 transition-all hover:border-orange-300 data-checked:border-orange-500 data-checked:bg-orange-50 data-checked:text-foreground"
+                                    >
                                             <span className="font-medium">{option.name}</span>
                                             <span className="mt-1 text-xs text-muted-foreground">
                                                 {option.price > 0 ? `+₹${option.price}` : 'Included'}
                                             </span>
-                                        </Label>
-                                    </div>
+                                    </RadioGroupItem>
                                 ))}
                             </RadioGroup>
                         </div>
 
-                        {/* Toppings */}
-                        <div className="mb-8">
-                            <div className="mb-3">
-                                <h3 className="font-semibold">Extra Toppings</h3>
-                                <p className="text-xs text-muted-foreground">
-                                    Choose your favorites
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                {toppings.map((topping) => {
-                                    const selected = selectedToppings.includes(topping.name);
-
-                                    return (
-                                        <button
-                                            key={topping.name}
-                                            type="button"
-                                            onClick={() => toggleTopping(topping.name)}
-                                            className={`flex items-center justify-between rounded-xl border-2 p-3 text-left transition-all ${selected
-                                                ? 'border-orange-500 bg-orange-50'
-                                                : 'border-muted hover:border-orange-300'
-                                                }`}>
-                                            <div className="flex items-center gap-2">
-                                                <CircleCheck
-                                                    size={18}
-                                                    className={
-                                                        selected
-                                                            ? 'text-orange-500'
-                                                            : 'text-muted-foreground/30'
-                                                    }
-                                                />
-
-                                                <span className="text-sm font-medium">
-                                                    {topping.name}
-                                                </span>
-                                            </div>
-
-                                            <span className="text-xs text-muted-foreground">
-                                                +₹{topping.price}
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
+                        <ToppingList
+                            toppings={toppings}
+                            selectedTopping={selectedTopping}
+                            onToppingToggle={toggleTopping}
+                        />
 
                         {/* Footer */}
                         <div className="flex items-center justify-between border-t pt-5">
