@@ -65,7 +65,7 @@ export default function Home() {
                     </div>
                 </div>
             </section>
-            <section>
+            <section className="bg-muted/50">
                 <div className="max-w-300.75 mx-auto py-12">
                     <Tabs defaultValue="pizza">
                         <TabsList>
