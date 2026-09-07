@@ -1,63 +1,63 @@
 'use client';
 import Link from "next/link";
-import {Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
-import {Menu as MenuIcon, Phone, ShoppingBasket, X} from "lucide-react";
-import {Button} from "@/components/ui/button";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Menu as MenuIcon, Phone, ShoppingBasket, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/custom/logo";
-import {useState} from "react";
+import { useState } from "react";
+import { Tenant } from "@/lib/types";
 
 
-function Header() {
+function Header({ tenants }: { tenants: Tenant[] }) {
+    console.log("tenants", tenants);
+
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const items = [
-        {value: 'Pizza Hut'},
-        {value: 'Cheesy Delight'},
-        {value: 'Kids Corner'},
-    ]
+    const items = tenants;
+
     return (
         <header className="bg-white">
             <nav className="mx-auto max-w-300.75 px-4 py-5 sm:px-6 lg:px-8">
                 <div className="hidden items-center justify-between md:flex">
-                <div className="flex items-center gap-4">
-                    <Link href={'/'}>
-                     <Logo />
-                    </Link>
-                    <Select>
-                        <SelectTrigger className="w-45">
-                            <SelectValue placeholder="Select Restaurant" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                {items.map((item) => (
-                                    <SelectItem key={item.value} value={item.value}>
-                                        {item.value}
-                                    </SelectItem>
-                                ))}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="flex items-center space-x-4">
-                    <ul className="flex items-center gap-6 font-medium">
-                        <li><Link href="/">Menu</Link></li>
-                        <li><Link href="/">Orders</Link></li>
-                    </ul>
-                    <div className="relative">
-                        <Link href="/cart">
-                            <ShoppingBasket className="hover:text-primary" />
+                    <div className="flex items-center gap-4">
+                        <Link href={'/'}>
+                            <Logo />
                         </Link>
-                        <span className="absolute -top-4 -right-5 h-6 w-6 flex items-center justify-center rounded-full bg-primary font-bold text-white">
-                            3
-                        </span>
+                        <Select>
+                            <SelectTrigger className="w-45">
+                                <SelectValue placeholder="Select Restaurant" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    {items.map((item) => (
+                                        <SelectItem key={item.id} value={item.name}>
+                                            {item.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
                     </div>
-                    <div className="flex items-center gap-x-2 ml-12">
-                        <Phone />
-                        <span>+91 123 456 7891</span>
+                    <div className="flex items-center space-x-4">
+                        <ul className="flex items-center gap-6 font-medium">
+                            <li><Link href="/">Menu</Link></li>
+                            <li><Link href="/">Orders</Link></li>
+                        </ul>
+                        <div className="relative">
+                            <Link href="/cart">
+                                <ShoppingBasket className="hover:text-primary" />
+                            </Link>
+                            <span className="absolute -top-4 -right-5 h-6 w-6 flex items-center justify-center rounded-full bg-primary font-bold text-white">
+                                3
+                            </span>
+                        </div>
+                        <div className="flex items-center gap-x-2 ml-12">
+                            <Phone />
+                            <span>+91 123 456 7891</span>
+                        </div>
+                        <Button>Logout</Button>
                     </div>
-                    <Button>Logout</Button>
                 </div>
-                </div>
-            {/*  mobile navbar  */}
+                {/*  mobile navbar  */}
                 <div className="flex items-center justify-between md:hidden">
 
                     {/* Left: Hamburger + Logo */}
@@ -90,8 +90,8 @@ function Header() {
                             </Link>
 
                             <span className="absolute -right-3 -top-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                3
-            </span>
+                                3
+                            </span>
                         </div>
 
                     </div>
@@ -150,10 +150,10 @@ function Header() {
                                         <SelectGroup>
                                             {items.map((item) => (
                                                 <SelectItem
-                                                    key={item.value}
-                                                    value={item.value}
+                                                    key={item.id}
+                                                    value={item.name}
                                                 >
-                                                    {item.value}
+                                                    {item.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectGroup>
