@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ProductList from "./components/product-list";
+import { Suspense } from "react";
+import { SkeletonTable } from "./components/skeleton-table";
 
 export default async function Home() {
-
     return (
         <>
-            <section className="bg-white">
+            <section id="home-page" className="bg-white">
                 <div className="container flex flex-col lg:flex-row sm:px-2 lg:px-6 items-center justify-between py-24 max-w-300.75 mx-auto">
                     <div>
                         <h1 className="sm:text-6xl lg:text-7xl font-black font-sans leading-9">
@@ -26,7 +27,10 @@ export default async function Home() {
                     </div>
                 </div>
             </section>
-            <ProductList />
+            <Suspense fallback={<SkeletonTable />}>
+                <ProductList />
+            </Suspense>
+
         </>
     );
 }
