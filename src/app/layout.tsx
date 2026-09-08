@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
-// import Header from "@/components/ui/custom/header";
 import { cn } from "@/lib/utils";
 import HeaderData from "./(home)/components/header-data";
+import StoreProvider from "./StoreProvider";
 
 
 const manrope = Manrope({
@@ -21,12 +21,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
     >
-      <body className={cn("min-h-screen bg-background font-manrope antialiased", manrope.variable)}>
-        <HeaderData />
-        <main>
-          {children}
-        </main>
-      </body>
+      <StoreProvider>
+        <body className={cn("min-h-screen bg-background font-manrope antialiased", manrope.variable)}>
+          <HeaderData />
+          <main>
+            {children}
+          </main>
+        </body>
+      </StoreProvider>
     </html>
   );
 }

@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/custom/logo";
 import { useState } from "react";
 import { Tenant } from "@/lib/types";
+import CartCounter from "./cart-counter";
 
 
 function Header({ tenants }: { tenants: Tenant[] }) {
-    console.log("tenants", tenants);
-
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const items = tenants;
 
@@ -42,14 +41,7 @@ function Header({ tenants }: { tenants: Tenant[] }) {
                             <li><Link href="/">Menu</Link></li>
                             <li><Link href="/">Orders</Link></li>
                         </ul>
-                        <div className="relative">
-                            <Link href="/cart">
-                                <ShoppingBasket className="hover:text-primary" />
-                            </Link>
-                            <span className="absolute -top-4 -right-5 h-6 w-6 flex items-center justify-center rounded-full bg-primary font-bold text-white">
-                                3
-                            </span>
-                        </div>
+                        <CartCounter />
                         <div className="flex items-center gap-x-2 ml-12">
                             <Phone />
                             <span>+91 123 456 7891</span>
@@ -84,15 +76,7 @@ function Header({ tenants }: { tenants: Tenant[] }) {
                             <Phone size={25} />
                         </Link>
 
-                        <div className="relative">
-                            <Link href="/cart">
-                                <ShoppingBasket size={27} />
-                            </Link>
-
-                            <span className="absolute -right-3 -top-3 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
-                                3
-                            </span>
-                        </div>
+                        <CartCounter />
 
                     </div>
                 </div>
