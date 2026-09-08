@@ -61,7 +61,6 @@ async function ProductList() {
                                 </TabsContent>
                             )
                         })}
-
                     </Tabs>
                 </div>
             </section>
