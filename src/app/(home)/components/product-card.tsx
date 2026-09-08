@@ -2,23 +2,15 @@
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader } from '../../../components/ui/card'
 import ProductModal from './product-modal';
-import { useState } from 'react';
-
-export type Product = {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    price: number;
-};
+import { Product } from '@/lib/types';
 
 type PropTypes = { product: Product };
 
 function ProductCard({ product }: PropTypes) {
     return (
         <Card className='border-none rounded-xl'>
-            <CardHeader className='flex items-center justify-center'>
-                <Image alt='pizza-image' width={150} height={150} src={product.image} />
+            <CardHeader className='flex items-center justify-center h-full'>
+                <Image className='h-full w-full' alt='pizza-image' width={150} height={150} src={product.image} />
             </CardHeader>
             <CardContent>
                 <h2 className='text-xl font-bold'>{product.name}</h2>
@@ -27,7 +19,7 @@ function ProductCard({ product }: PropTypes) {
             <CardFooter className='flex items-center justify-between mt-4'>
                 <p>
                     <span>From </span>
-                    <span className='font-bold'>₹{product.price}</span>
+                    <span className='font-bold'>₹100</span>
                 </p>
 
                 <ProductModal />
