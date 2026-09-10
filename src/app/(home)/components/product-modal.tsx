@@ -12,6 +12,10 @@ import { Product, Topping } from '@/lib/types';
 const ProductModal = ({ product }: { product: Product }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    const handleAddToCart = () => {
+        console.log('adding to the cart...');
+    }
+
     const configurations = [
         {
             name: 'Size',
@@ -28,12 +32,6 @@ const ProductModal = ({ product }: { product: Product }) => {
                 { name: 'Thick', price: 50 },
             ],
         },
-    ];
-
-    const toppings: Topping[] = [
-        { id: '1', name: 'Extra Cheese', image: '/cheese.png', price: 50, isAvailable: true },
-        { id: '2', name: 'Chicken', image: '/chicken.png', price: 50, isAvailable: true },
-        { id: '3', name: 'Jalapeños', image: '/jelapeno.png', price: 50, isAvailable: true },
     ];
 
     const [selectedSize, setSelectedSize] = useState('Small');
@@ -56,8 +54,8 @@ const ProductModal = ({ product }: { product: Product }) => {
 
     const toggleTopping = (topping: Topping) => {
         setSelectedToppings((current) =>
-            current.some((item) => item.id === topping.id)
-                ? current.filter((item) => item.id !== topping.id)
+            current.some((item) => item._id === topping._id)
+                ? current.filter((item) => item._id !== topping._id)
                 : [...current, topping]
         );
     };
@@ -154,11 +152,7 @@ const ProductModal = ({ product }: { product: Product }) => {
                             </RadioGroup>
                         </div>
 
-                        <ToppingList
-                            toppings={toppings}
-                            selectedToppings={selectedToppings}
-                            onToppingToggle={toggleTopping}
-                        />
+                        <ToppingList />
 
                         {/* Footer */}
                         <div className="flex items-center justify-between border-t pt-5">

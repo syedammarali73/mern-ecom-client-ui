@@ -1,5 +1,5 @@
 export type Topping = {
-    id: string;
+    _id: string;
     name: string;
     price: number;
     image: string;
@@ -17,6 +17,13 @@ export interface PriceConfiguration {
     [key: string]: {
         priceType: 'base' | 'aditional';
         availableOptions: string[];
+    };
+}
+
+export interface ProductPriceConfiguration {
+    [key: string]: {
+        priceType: 'base' | 'additional';
+        availableOptions: Record<string, number>;
     };
 }
 
@@ -40,6 +47,7 @@ export type Product = {
     name: string;
     description: string;
     category: Category;
+    priceConfiguration: ProductPriceConfiguration;
     attributes: [];
     categoryId: string;
     image: string;
