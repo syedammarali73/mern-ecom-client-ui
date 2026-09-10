@@ -7,16 +7,10 @@ import { ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import ToppingList from './topping-list';
-import { Topping } from '@/lib/types';
+import { Product, Topping } from '@/lib/types';
 
-const ProductModal = () => {
+const ProductModal = ({ product }: { product: Product }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
-    const product = {
-        name: 'Classic Margherita Pizza',
-        description:
-            'A delicious combination of fresh mozzarella, tomato sauce, basil and our signature herbs.',
-        image: '/pizza-main.png',
-    };
 
     const configurations = [
         {
@@ -123,10 +117,10 @@ const ProductModal = () => {
                                         value={option.name}
                                         className="h-auto w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 transition-all hover:border-orange-300 data-checked:border-orange-500 data-checked:bg-orange-50 data-checked:text-foreground"
                                     >
-                                            <span className="font-medium">{option.name}</span>
-                                            <span className="mt-1 text-xs text-muted-foreground">
-                                                ₹{option.price}
-                                            </span>
+                                        <span className="font-medium">{option.name}</span>
+                                        <span className="mt-1 text-xs text-muted-foreground">
+                                            ₹{option.price}
+                                        </span>
                                     </RadioGroupItem>
                                 ))}
                             </RadioGroup>
@@ -151,10 +145,10 @@ const ProductModal = () => {
                                         value={option.name}
                                         className="h-auto w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 transition-all hover:border-orange-300 data-checked:border-orange-500 data-checked:bg-orange-50 data-checked:text-foreground"
                                     >
-                                            <span className="font-medium">{option.name}</span>
-                                            <span className="mt-1 text-xs text-muted-foreground">
-                                                {option.price > 0 ? `+₹${option.price}` : 'Included'}
-                                            </span>
+                                        <span className="font-medium">{option.name}</span>
+                                        <span className="mt-1 text-xs text-muted-foreground">
+                                            {option.price > 0 ? `+₹${option.price}` : 'Included'}
+                                        </span>
                                     </RadioGroupItem>
                                 ))}
                             </RadioGroup>

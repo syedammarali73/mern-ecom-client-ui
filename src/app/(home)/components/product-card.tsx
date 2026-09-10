@@ -22,7 +22,7 @@ function ProductCard({ product }: PropTypes) {
                     <span className='font-bold'>₹100</span>
                 </p>
 
-                <ProductModal />
+                <ProductModal product={product} />
             </CardFooter>
         </Card>
     )
