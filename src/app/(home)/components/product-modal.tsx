@@ -4,53 +4,26 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ShoppingCart } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import ToppingList from './topping-list';
 import { Product, Topping } from '@/lib/types';
 
+type ChosenConfig = {
+    [key: string]: string;
+};
+
 const ProductModal = ({ product }: { product: Product }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
-
-    const handleAddToCart = () => {
-        console.log('adding to the cart...');
-    }
-
-    const configurations = [
-        {
-            name: 'Size',
-            options: [
-                { name: 'Small', price: 199 },
-                { name: 'Medium', price: 299 },
-                { name: 'Large', price: 399 },
-            ],
-        },
-        {
-            name: 'Crust',
-            options: [
-                { name: 'Thin', price: 0 },
-                { name: 'Thick', price: 50 },
-            ],
-        },
-    ];
-
-    const [selectedSize, setSelectedSize] = useState('Small');
-    const [selectedCrust, setSelectedCrust] = useState('Thin');
     const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
-    const sizePrice =
-        configurations[0].options.find((item) => item.name === selectedSize)?.price ?? 0;
+    const defaultConfiguration = Object.entries(product.category.priceConfiguration)
+        .map(([key, value]) => {
+            return { [key]: value.availableOptions[0] };
+        })
+        .reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
-    const crustPrice =
-        configurations[1].options.find((item) => item.name === selectedCrust)?.price ?? 0;
-
-    const toppingsPrice = selectedToppings.reduce(
-        (total, topping) => total + topping.price,
-        0
-    );
-
-
-    const totalPrice = sizePrice + crustPrice + toppingsPrice;
+    const [chosenConfig, setChosenConfig] = useState<ChosenConfig>(defaultConfiguration as unknown as ChosenConfig);
 
     const toggleTopping = (topping: Topping) => {
         setSelectedToppings((current) =>
@@ -58,7 +31,29 @@ const ProductModal = ({ product }: { product: Product }) => {
                 ? current.filter((item) => item._id !== topping._id)
                 : [...current, topping]
         );
-    };
+    }
+
+    const handleRadioChange = (key: string, data: string) => {
+        console.log('handle radio');
+        console.log(key, data);
+
+        setChosenConfig((prev) => {
+            return { ...prev, [key]: data }
+        })
+    }
+
+    const totalPrice = useMemo(() => {
+        const toppingsTotal = selectedToppings.reduce((acc, curr) => acc + curr.price, 0);
+        console.log('product', product);
+        const configPricing = Object.entries(chosenConfig).reduce(
+            (acc, [key, value]: [string, string]) => {
+                const price = product.priceConfiguration[key].availableOptions[value];
+                return acc + price;
+            },
+            0
+        );
+        return configPricing + toppingsTotal;
+    }, [chosenConfig, selectedToppings, product]);
 
 
     return (
@@ -97,62 +92,47 @@ const ProductModal = ({ product }: { product: Product }) => {
                         </div>
 
                         {/* Size */}
-                        <div className="mb-6">
-                            <div className="mb-3 flex items-center justify-between">
-                                <h3 className="font-semibold">Choose Size</h3>
-                                <span className="text-xs text-muted-foreground">
-                                    Required
-                                </span>
-                            </div>
-
-                            <RadioGroup
-                                value={selectedSize}
-                                onValueChange={setSelectedSize}
-                                className="grid grid-cols-3 gap-3">
-                                {configurations[0].options.map((option) => (
-                                    <RadioGroupItem
-                                        key={option.name}
-                                        value={option.name}
-                                        className="h-auto w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 transition-all hover:border-orange-300 data-checked:border-orange-500 data-checked:bg-orange-50 data-checked:text-foreground"
-                                    >
-                                        <span className="font-medium">{option.name}</span>
-                                        <span className="mt-1 text-xs text-muted-foreground">
-                                            ₹{option.price}
+                        {Object.entries(product.category.priceConfiguration).map(([key, value]) => {
+                            return (
+                                <div className="mb-6" key={key}>
+                                    <div className="mb-3 flex items-center justify-between">
+                                        <h3 className="font-semibold">Choose {key}</h3>
+                                        <span className="text-xs text-muted-foreground">
+                                            Required
                                         </span>
-                                    </RadioGroupItem>
-                                ))}
-                            </RadioGroup>
-                        </div>
+                                    </div>
+                                    <div key={key}>
+                                        <RadioGroup
+                                            defaultValue={value.availableOptions[0]}
+                                            onValueChange={(data) => {
+                                                handleRadioChange(key, data)
+                                            }}
+                                            className="grid grid-cols-3 gap-3">
+                                            {value.availableOptions.map((option) => (
+                                                <div key={option}>
+                                                    <RadioGroupItem
+                                                        key={option}
+                                                        id={option}
+                                                        value={option}
+                                                        aria-label={option}
+                                                        className="h-auto w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 transition-all hover:border-orange-300 data-checked:border-orange-500 data-checked:bg-orange-50 data-checked:text-foreground"
 
-                        {/* Crust */}
-                        <div className="mb-6">
-                            <div className="mb-3 flex items-center justify-between">
-                                <h3 className="font-semibold">Choose Crust</h3>
-                                <span className="text-xs text-muted-foreground">
-                                    Required
-                                </span>
-                            </div>
+                                                    >
+                                                        <span className="font-medium">{option}</span>
+                                                    </RadioGroupItem>
+                                                </div>
+                                            ))}
+                                        </RadioGroup>
+                                    </div>
 
-                            <RadioGroup
-                                value={selectedCrust}
-                                onValueChange={setSelectedCrust}
-                                className="grid grid-cols-3 gap-3">
-                                {configurations[1].options.map((option) => (
-                                    <RadioGroupItem
-                                        key={option.name}
-                                        value={option.name}
-                                        className="h-auto w-full aspect-auto cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-muted bg-card p-4 transition-all hover:border-orange-300 data-checked:border-orange-500 data-checked:bg-orange-50 data-checked:text-foreground"
-                                    >
-                                        <span className="font-medium">{option.name}</span>
-                                        <span className="mt-1 text-xs text-muted-foreground">
-                                            {option.price > 0 ? `+₹${option.price}` : 'Included'}
-                                        </span>
-                                    </RadioGroupItem>
-                                ))}
-                            </RadioGroup>
-                        </div>
+                                </div>
+                            )
+                        })}
 
-                        <ToppingList />
+                        <ToppingList
+                            selectedToppings={selectedToppings}
+                            onToppingToggle={toggleTopping}
+                        />
 
                         {/* Footer */}
                         <div className="flex items-center justify-between border-t pt-5">

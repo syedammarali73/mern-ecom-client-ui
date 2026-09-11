@@ -3,29 +3,30 @@ import ToppingCard from './topping-card';
 import { useEffect, useState } from 'react';
 
 
-function ToppingList() {
+type PropType = {
+    selectedToppings: Topping[];
+    onToppingToggle: (topping: Topping) => void;
+}
+
+function ToppingList({ selectedToppings, onToppingToggle }: PropType) {
     const [toppings, setToppings] = useState<Topping[]>([]);
-    const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchData = async () => {
             const toppingResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings`)
             const toppings = await toppingResponse.json();
-            setToppings(toppings.data);
-            console.log('toppings', toppings);
+
+            if (isMounted) {
+                setToppings(toppings.data);
+            }
         }
         fetchData();
-    }, []);
 
-    const onToppingToggle = (topping: Topping) => {
-        const isAlreadyExists = selectedToppings.some(
-            (element: Topping) => element._id === topping._id
-        );
-        if (isAlreadyExists) {
-            setSelectedToppings((prev) => prev.filter((elm: Topping) => elm._id !== topping._id));
+        return () => {
+            isMounted = false;
         }
-        return;
-    }
+    }, []);
 
     return (
         <section className='mt-6'>

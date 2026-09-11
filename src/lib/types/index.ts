@@ -15,7 +15,7 @@ export type Tenant = {
 
 export interface PriceConfiguration {
     [key: string]: {
-        priceType: 'base' | 'aditional';
+        priceType: 'base' | 'additional';
         availableOptions: string[];
     };
 }

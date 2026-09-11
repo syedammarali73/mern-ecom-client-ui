@@ -13,7 +13,7 @@ type PropType = {
 }
 
 function ToppingCard({ topping, selectedToppings, onToppingToggle }: PropType) {
-    const isCurrentSelected = selectedToppings.some((item) => item.id === topping.id);
+    const isCurrentSelected = selectedToppings.some((item) => item._id === topping._id);
 
     return (
         <Button
