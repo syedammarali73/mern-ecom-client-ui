@@ -28,6 +28,10 @@ function ToppingList({ selectedToppings, onToppingToggle }: PropType) {
         }
     }, []);
 
+    if (!toppings) {
+        return <></>
+    }
+
     return (
         <section className='mt-6'>
             <h3>Extra Toppings</h3>
