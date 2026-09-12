@@ -4,10 +4,11 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ShoppingCart } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { startTransition, Suspense, useMemo, useState } from 'react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import ToppingList from './topping-list';
 import { Product, Topping } from '@/lib/types';
+import { SkeletonTable } from './skeleton-table';
 
 type ChosenConfig = {
     [key: string]: string;
@@ -26,25 +27,29 @@ const ProductModal = ({ product }: { product: Product }) => {
     const [chosenConfig, setChosenConfig] = useState<ChosenConfig>(defaultConfiguration as unknown as ChosenConfig);
 
     const toggleTopping = (topping: Topping) => {
-        setSelectedToppings((current) =>
-            current.some((item) => item._id === topping._id)
-                ? current.filter((item) => item._id !== topping._id)
-                : [...current, topping]
-        );
+        const isAlreadyExists = selectedToppings.some((element: Topping) => element._id === topping._id)
+
+        startTransition(() => {
+            if (isAlreadyExists) {
+                setSelectedToppings((prev) => prev.filter((ele: Topping) => ele._id !== topping._id))
+            } else {
+                setSelectedToppings((prev) => [...prev, topping]);
+            }
+        })
+
     }
 
     const handleRadioChange = (key: string, data: string) => {
-        console.log('handle radio');
-        console.log(key, data);
-
-        setChosenConfig((prev) => {
-            return { ...prev, [key]: data }
+        startTransition(() => {
+            setChosenConfig((prev) => {
+                return { ...prev, [key]: data }
+            })
         })
     }
 
     const totalPrice = useMemo(() => {
         const toppingsTotal = selectedToppings.reduce((acc, curr) => acc + curr.price, 0);
-        console.log('product', product);
+
         const configPricing = Object.entries(chosenConfig).reduce(
             (acc, [key, value]: [string, string]) => {
                 const price = product.priceConfiguration[key].availableOptions[value];
@@ -128,11 +133,12 @@ const ProductModal = ({ product }: { product: Product }) => {
                                 </div>
                             )
                         })}
-
-                        <ToppingList
-                            selectedToppings={selectedToppings}
-                            onToppingToggle={toggleTopping}
-                        />
+                        <Suspense fallback={<SkeletonTable />}>
+                            <ToppingList
+                                selectedToppings={selectedToppings}
+                                onToppingToggle={toggleTopping}
+                            />
+                        </Suspense>
 
                         {/* Footer */}
                         <div className="flex items-center justify-between border-t pt-5">
