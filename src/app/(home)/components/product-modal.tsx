@@ -9,14 +9,16 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import ToppingList from './topping-list';
 import { Product, Topping } from '@/lib/types';
 import { SkeletonTable } from './skeleton-table';
-import { useAppDispatch } from '@/lib/store/hooks';
-import { addToCart } from '@/lib/store/features/cart/cartSlice';
+import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
+import { addToCart, CartItem } from '@/lib/store/features/cart/cartSlice';
+import { hashTheItem } from '@/lib/utils';
 
 type ChosenConfig = {
     [key: string]: string;
 };
 
 const ProductModal = ({ product }: { product: Product }) => {
+    const cartItems = useAppSelector((state) => state.cart.cartItems);
     const dispatch = useAppDispatch();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
@@ -64,15 +66,37 @@ const ProductModal = ({ product }: { product: Product }) => {
     }, [chosenConfig, selectedToppings, product]);
 
     const handleAddToCart = (product: Product) => {
-        const itemIoAdd = {
-            product,
+        const itemIoAdd: CartItem = {
+            _id: product._id,
+            name: product.name,
+            image: product.image,
+            priceConfiguration: product.priceConfiguration,
             chosenConfiguration: {
                 priceConfiguration: chosenConfig,
                 selectedToppings: selectedToppings
-            }
+            },
+            qty: 1
         }
         dispatch(addToCart(itemIoAdd))
+        setDialogOpen(false);
     }
+
+    const alreadyInCart = useMemo(() => {
+        const currentConfiguration = {
+            _id: product._id,
+            name: product.name,
+            image: product.image,
+            priceConfiguration: product.priceConfiguration,
+            chosenConfiguration: {
+                priceConfiguration: { ...chosenConfig },
+                selectedToppings: selectedToppings
+            },
+            qty: 1
+        };
+        const hash = hashTheItem(currentConfiguration);
+
+        return cartItems.some((item) => item.hash === hash)
+    }, [product, chosenConfig, selectedToppings, cartItems])
 
 
     return (
@@ -160,15 +184,16 @@ const ProductModal = ({ product }: { product: Product }) => {
                                 <p className="text-xs text-muted-foreground">Total Price</p>
                                 <p className="text-2xl font-bold">₹{totalPrice}</p>
                             </div>
-
+                            {alreadyInCart ? 'already in cart' : 'not in cart'}
                             <Button
+                                disabled={alreadyInCart}
                                 size="lg"
-                                className="rounded-xl px-6"
-                                // onClick={() => setDialogOpen(false)}
+                                // className="rounded-xl px-6"
+                                className={alreadyInCart ? 'bg-green-700 rounded-xl px-6' : 'bg-primary rounded-xl px-6'}
                                 onClick={() => handleAddToCart(product)}
                             >
                                 <ShoppingCart size={19} />
-                                <span className="ml-2">Add to cart</span>
+                                <span className="ml-2">{alreadyInCart ? 'already in cart' : 'Add to cart'}</span>
                             </Button>
                         </div>
 
