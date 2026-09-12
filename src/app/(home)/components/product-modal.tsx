@@ -9,12 +9,15 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import ToppingList from './topping-list';
 import { Product, Topping } from '@/lib/types';
 import { SkeletonTable } from './skeleton-table';
+import { useAppDispatch } from '@/lib/store/hooks';
+import { addToCart } from '@/lib/store/features/cart/cartSlice';
 
 type ChosenConfig = {
     [key: string]: string;
 };
 
 const ProductModal = ({ product }: { product: Product }) => {
+    const dispatch = useAppDispatch();
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedToppings, setSelectedToppings] = useState<Topping[]>([]);
 
@@ -59,6 +62,17 @@ const ProductModal = ({ product }: { product: Product }) => {
         );
         return configPricing + toppingsTotal;
     }, [chosenConfig, selectedToppings, product]);
+
+    const handleAddToCart = (product: Product) => {
+        const itemIoAdd = {
+            product,
+            chosenConfiguration: {
+                priceConfiguration: chosenConfig,
+                selectedToppings: selectedToppings
+            }
+        }
+        dispatch(addToCart(itemIoAdd))
+    }
 
 
     return (
@@ -150,7 +164,9 @@ const ProductModal = ({ product }: { product: Product }) => {
                             <Button
                                 size="lg"
                                 className="rounded-xl px-6"
-                                onClick={() => setDialogOpen(false)}>
+                                // onClick={() => setDialogOpen(false)}
+                                onClick={() => handleAddToCart(product)}
+                            >
                                 <ShoppingCart size={19} />
                                 <span className="ml-2">Add to cart</span>
                             </Button>
