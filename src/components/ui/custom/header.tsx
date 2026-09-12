@@ -1,13 +1,14 @@
 'use client';
 import Link from "next/link";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Menu as MenuIcon, Phone, ShoppingBasket, X } from "lucide-react";
+import { Menu as MenuIcon, Phone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Logo from "@/components/ui/custom/logo";
 import { useState } from "react";
 import { Tenant } from "@/lib/types";
-import CartCounter from "./cart-counter";
+import dynamic from "next/dynamic";
 
+const CartCounterWithoutSSR = dynamic(() => import('./cart-counter'), { ssr: false });
 
 function Header({ tenants }: { tenants: Tenant[] }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -41,7 +42,7 @@ function Header({ tenants }: { tenants: Tenant[] }) {
                             <li><Link href="/">Menu</Link></li>
                             <li><Link href="/">Orders</Link></li>
                         </ul>
-                        <CartCounter />
+                        <CartCounterWithoutSSR />
                         <div className="flex items-center gap-x-2 ml-12">
                             <Phone />
                             <span>+91 123 456 7891</span>
@@ -76,7 +77,7 @@ function Header({ tenants }: { tenants: Tenant[] }) {
                             <Phone size={25} />
                         </Link>
 
-                        <CartCounter />
+                        <CartCounterWithoutSSR />
 
                     </div>
                 </div>
