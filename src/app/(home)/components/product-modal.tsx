@@ -78,6 +78,7 @@ const ProductModal = ({ product }: { product: Product }) => {
             qty: 1
         }
         dispatch(addToCart(itemIoAdd))
+        setSelectedToppings([]);
         setDialogOpen(false);
     }
 
