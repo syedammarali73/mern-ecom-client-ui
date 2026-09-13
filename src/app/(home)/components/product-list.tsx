@@ -2,7 +2,10 @@ import ProductCard from "@/app/(home)/components/product-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Category, Product } from "@/lib/types";
 
-async function ProductList() {
+
+async function ProductList({ restaurantId }: { restaurantId: string | undefined }) {
+    const tenantId = restaurantId === undefined ? '' : restaurantId;
+
     const [categoryResponse, productsResponse] = await Promise.all([
         fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
             next: {
@@ -10,7 +13,7 @@ async function ProductList() {
             }
         }),
 
-        fetch(`${process.env.BACKEND_URL}/api/catalog/products`, {
+        fetch(`${process.env.BACKEND_URL}/api/catalog/products?tenantId=${tenantId}`, {
             next: {
                 revalidate: 3600,
             }

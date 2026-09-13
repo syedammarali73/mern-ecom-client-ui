@@ -7,12 +7,29 @@ import Logo from "@/components/ui/custom/logo";
 import { useState } from "react";
 import { Tenant } from "@/lib/types";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 const CartCounterWithoutSSR = dynamic(() => import('./cart-counter'), { ssr: false });
 
 function Header({ tenants }: { tenants: Tenant[] }) {
+    const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const items = tenants;
+    const [selectedRestaurant, setSelectedRestaurant] = useState<string>('all');
+    const selectedRestaurantName = selectedRestaurant === 'all'
+        ? 'All Restaurants'
+        : tenants.find(
+            (tenant) => String(tenant.id) === selectedRestaurant
+        )?.name;
+
+
+    const handleValueChange = async (value: any) => {
+        setSelectedRestaurant(value)
+        if (value === 'all') {
+            router.push('/')
+        } else {
+            router.push(`/?restaurantId=${value}`)
+        }
+    }
 
     return (
         <header className="bg-white">
@@ -22,14 +39,17 @@ function Header({ tenants }: { tenants: Tenant[] }) {
                         <Link href={'/'}>
                             <Logo />
                         </Link>
-                        <Select>
+                        <Select value={selectedRestaurant} onValueChange={handleValueChange}>
                             <SelectTrigger className="w-45">
-                                <SelectValue placeholder="Select Restaurant" />
+                                <SelectValue placeholder="Select Restaurant" >
+                                    {selectedRestaurantName}
+                                </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    {items.map((item) => (
-                                        <SelectItem key={item.id} value={item.name}>
+                                    <SelectItem value="all">All Restaurants</SelectItem>
+                                    {tenants.map((item) => (
+                                        <SelectItem key={item.id} value={String(item.id)}>
                                             {item.name}
                                         </SelectItem>
                                     ))}
@@ -126,17 +146,19 @@ function Header({ tenants }: { tenants: Tenant[] }) {
 
                             {/* Existing Select */}
                             <div className="px-3 py-4">
-                                <Select>
+                                <Select value={selectedRestaurant} onValueChange={handleValueChange}>
                                     <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select Restaurant" />
+                                        <SelectValue placeholder="Select Restaurant" >
+                                            {selectedRestaurantName}
+                                        </SelectValue>
                                     </SelectTrigger>
 
                                     <SelectContent>
                                         <SelectGroup>
-                                            {items.map((item) => (
+                                            {tenants.map((item) => (
                                                 <SelectItem
                                                     key={item.id}
-                                                    value={item.name}
+                                                    value={String(item.id)}
                                                 >
                                                     {item.name}
                                                 </SelectItem>

@@ -4,7 +4,16 @@ import ProductList from "./components/product-list";
 import { Suspense } from "react";
 import { SkeletonTable } from "./components/skeleton-table";
 
-export default async function Home() {
+type PageProps = {
+    searchParams: Promise<{
+        restaurantId?: string;
+    }>;
+};
+
+export default async function Home({ searchParams }: PageProps) {
+    const params = await searchParams;
+    const restaurantId = params.restaurantId;
+
     return (
         <>
             <section className="bg-white">
@@ -28,7 +37,7 @@ export default async function Home() {
                 </div>
             </section>
             <Suspense fallback={<SkeletonTable />}>
-                <ProductList />
+                <ProductList restaurantId={restaurantId} />
             </Suspense>
         </>
     );
