@@ -12,6 +12,8 @@ import { SkeletonTable } from './skeleton-table';
 import { useAppDispatch, useAppSelector } from '@/lib/store/hooks';
 import { addToCart, CartItem } from '@/lib/store/features/cart/cartSlice';
 import { hashTheItem } from '@/lib/utils';
+import { toast } from '@/components/ui/toast';
+import SuccessToast from './success-toast';
 
 type ChosenConfig = {
     [key: string]: string;
@@ -80,6 +82,9 @@ const ProductModal = ({ product }: { product: Product }) => {
         dispatch(addToCart(itemIoAdd))
         setSelectedToppings([]);
         setDialogOpen(false);
+        toast.add({
+            title: <SuccessToast />
+        })
     }
 
     const alreadyInCart = useMemo(() => {

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import HeaderData from "./(home)/components/header-data";
 import StoreProvider from "./StoreProvider";
+import { Toaster } from "@/components/ui/toast";
 
 
 const manrope = Manrope({
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <main>
             {children}
           </main>
+          <Toaster />
         </body>
       </StoreProvider>
     </html>
