@@ -14,21 +14,15 @@ const CartCounterWithoutSSR = dynamic(() => import('./cart-counter'), { ssr: fal
 function Header({ tenants }: { tenants: Tenant[] }) {
     const router = useRouter();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [selectedRestaurant, setSelectedRestaurant] = useState<string>('all');
-    const selectedRestaurantName = selectedRestaurant === 'all'
-        ? 'All Restaurants'
-        : tenants.find(
-            (tenant) => String(tenant.id) === selectedRestaurant
-        )?.name;
+    const [selectedRestaurant, setSelectedRestaurant] = useState('');
+    const selectedRestaurantName = tenants.find(
+        (tenant) => String(tenant.id) === selectedRestaurant
+    )?.name;
 
 
     const handleValueChange = async (value: any) => {
         setSelectedRestaurant(value)
-        if (value === 'all') {
-            router.push('/')
-        } else {
-            router.push(`/?restaurantId=${value}`)
-        }
+        router.push(`/?restaurantId=${value}`)
     }
 
     return (
@@ -41,13 +35,12 @@ function Header({ tenants }: { tenants: Tenant[] }) {
                         </Link>
                         <Select value={selectedRestaurant} onValueChange={handleValueChange}>
                             <SelectTrigger className="w-45">
-                                <SelectValue placeholder="Select Restaurant" >
+                                <SelectValue placeholder="Select Restaurant">
                                     {selectedRestaurantName}
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
-                                    <SelectItem value="all">All Restaurants</SelectItem>
                                     {tenants.map((item) => (
                                         <SelectItem key={item.id} value={String(item.id)}>
                                             {item.name}

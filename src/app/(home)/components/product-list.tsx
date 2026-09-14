@@ -4,7 +4,7 @@ import { Category, Product } from "@/lib/types";
 
 
 async function ProductList({ restaurantId }: { restaurantId: string | undefined }) {
-    const tenantId = restaurantId === undefined ? '' : restaurantId;
+    const tenantId = restaurantId === undefined ? null : restaurantId;
 
     const [categoryResponse, productsResponse] = await Promise.all([
         fetch(`${process.env.BACKEND_URL}/api/catalog/categories`, {
@@ -33,6 +33,9 @@ async function ProductList({ restaurantId }: { restaurantId: string | undefined 
         productsResponse.json()
     ])
 
+    if (tenantId === null) {
+        return <></>
+    }
 
     return (
         <>
