@@ -1,6 +1,7 @@
 import { Topping } from '@/lib/types';
 import ToppingCard from './topping-card';
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 
 type PropType = {
@@ -10,11 +11,12 @@ type PropType = {
 
 function ToppingList({ selectedToppings, onToppingToggle }: PropType) {
     const [toppings, setToppings] = useState<Topping[]>([]);
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         let isMounted = true;
         const fetchData = async () => {
-            const toppingResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings`)
+            const toppingResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/toppings?tenantId=${searchParams.get('restaurantId')}`)
             const toppings = await toppingResponse.json();
 
             if (isMounted) {
@@ -28,7 +30,7 @@ function ToppingList({ selectedToppings, onToppingToggle }: PropType) {
         }
     }, []);
 
-    if (!toppings) {
+    if (toppings.length === 0) {
         return <></>
     }
 
