@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react"
 import { useMemo } from "react";
 import CartItem from "./CartItem";
 import EmptyCart from "./EmptyCart";
+import Link from "next/link";
 
 function CartItems() {
     const cart = useAppSelector((state) => state.cart.cartItems);
@@ -30,10 +31,12 @@ function CartItems() {
                 ))}
                 <div className="flex justify-between items-center">
                     <span className="font-bold text-xl">total: &#8377;{finalTotal}</span>
-                    <Button>
-                        Checkout
-                        <ArrowRight size={16} className="ml-2" />
-                    </Button>
+                    <Link href={'/checkout'}>
+                        <Button>
+                            Checkout
+                            <ArrowRight size={16} className="ml-2" />
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </section>
