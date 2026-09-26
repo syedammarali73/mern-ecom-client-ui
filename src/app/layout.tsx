@@ -23,7 +23,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
     >
       <StoreProvider>
-        <body className={cn("min-h-screen bg-background font-manrope antialiased", manrope.variable)}>
+        <body className={cn("min-h-screen bg-background font-manrope antialiased overflow-hidden", manrope.variable)}>
           <HeaderData />
           <main>
             {children}
